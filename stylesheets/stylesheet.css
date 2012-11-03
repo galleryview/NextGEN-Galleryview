@@ -296,7 +296,7 @@ blockquote {
 
 ul li {
   list-style: disc inside;
-  padding-left: 20px;
+  padding: 5px 0px 5px 20px;
 }
 
 ol li {
