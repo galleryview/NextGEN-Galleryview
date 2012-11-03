@@ -35,11 +35,24 @@
 
 <p>NextGEN-Galleryview (originally created by <a href="http://alexrabe.de/">Alex Rabe</a>) is a Wordpress plugin providing <a href="http://www.nextgen-gallery.com/">NextGen-Gallery</a> plugin users a new template based on the <a href="http://spaceforaname.com/galleryview/">Galleryview jQuery Plugin</a> created by Jack Wanders (<a href="https://github.com/jackwanders" class="user-mention">@jackwanders</a>). The plugin has been updated by Brandon Hubbard (<a href="https://github.com/bhubbard" class="user-mention">@bhubbard</a>).</p>
 
-<h3>How to Use</h3>
+<h3>Basic Usage: </h3>
 
-<p>Basic Usage: Simply use <strong>galleryview</strong> as your NextGen-Gallery Template.</p>
+<p>Simply use <strong>galleryview</strong> as your NextGen-Gallery Template.</p>
 
 <pre><code>[nggallery id=1 template="galleryview"]</code></pre>
+
+<h3>Advanced Usage: </h3>
+
+<p>For advanced use its recommended to create your own nextgen-gallery template.</p>
+
+<ol>
+<li>Create a folder called nggallery within your Wordpress theme.</li>
+<li>Copy <strong>gallery-galleryview.php<strong> from the "view" folder of the plugin and place it within the nggallery folder you created.</li>
+<li>Now rename the file to gallery-ANAMEYOULIKE.php</li>
+<li>Now modify the template to your desires and use with NextGenGallery.
+<pre><code>[nggallery id=1 template="ANAMEYOULIKE"]</code></pre>
+</li>
+</ol>
 
 <h3>Authors and Contributors</h3>
 
@@ -47,8 +60,10 @@
 <li>Alex Rabe - Original Creator of this plugin</li>
 <li>Jack Wanders (<a href="https://github.com/jackwanders" class="user-mention">@jackwanders</a>) - Creator of GalleryView</li>
 <li>Brandon Hubbard (<a href="https://github.com/bhubbard" class="user-mention">@bhubbard</a>) - Updated Plugin</li>
-</ul><h3>Support or Contact</h3>
-        </section>
+</ul>
+
+
+</section>
 
         <footer>
           Tactile theme by <a href="http://twitter.com/jasonlong">Jason Long</a>.
