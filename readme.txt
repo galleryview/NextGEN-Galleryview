@@ -26,13 +26,13 @@ NextGEN-Galleryview (originally created by Alex Rabe) is a Wordpress plugin prov
 
 == Installation ==
 
-1. 	Download, install, and activate the NextGEN Gallery plugin.
+1.     Download, install, and activate the NextGEN Gallery plugin.
 
-2.		Download, install, and activate the NextGEN-Galleryview plugin
+2.     Download, install, and activate the NextGEN-Galleryview plugin
 
-3.		From your Wordpress Dashboard, go to Gallery > Add Gallery/Images > Follow the on-screen cues.
+3.     From your Wordpress Dashboard, go to Gallery > Add Gallery/Images > Follow the on-screen cues.
 
-4.		When adding a gallery via a shortcode use template="gallerview"
+4.     When adding a gallery via a shortcode use template="gallerview"
 
 
 == Screenshots ==
