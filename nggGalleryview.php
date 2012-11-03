@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: NextGEN Galleryview
-Plugin URI: https://github.com/bhubbard/NextGEN-Galleryview
+Plugin URI: http://bhubbard.github.com/NextGEN-Galleryview/
 Description: Add the script files and template for the jQuery Plugin Galleryview integration from Jack Anderson (http://www.spaceforaname.com/galleryview/). Use the shortcode [nggallery id=x template="galleryview"] to show the new layout. Plugin originally created by Alex Rabe.
 Author: Alex Rabe, Brandon Hubbard
 Author URI: http://brandonhubbard.com/
