@@ -32,7 +32,7 @@ NextGEN-Galleryview (originally created by Alex Rabe) is a Wordpress plugin prov
 
 3.     From your Wordpress Dashboard, go to Gallery > Add Gallery/Images > Follow the on-screen cues.
 
-4.     When adding a gallery via a shortcode use template="gallerview"
+4.     When adding a gallery via a shortcode use template="galleryview"
 
 
 == Screenshots ==
