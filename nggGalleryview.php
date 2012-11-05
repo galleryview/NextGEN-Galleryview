@@ -26,6 +26,7 @@ if (!class_exists('nggGalleryview')) {
 
 		// Add our Template
 		function add_template( $path, $template_name = false) {
+			// Check theme for template first
 			if ( file_exists (TEMPLATEPATH . "/nggallery/gallery-galleryview.php")) {
 				$template_name == 'gallery-galleryview';
 				$path = TEMPLATEPATH . "/nggallery/gallery-galleryview.php";
