@@ -44,15 +44,15 @@ if (!class_exists('nggGalleryview')) {
 			if ( !is_admin() ) { // we do not want our scripts to load in the dashboard
 
 				// jQuery Easing via CDN
-				wp_register_script('jquery-easing', 'http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js', 'jquery', null, false);
+				wp_register_script('jquery-easing', 'http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js', 'jquery', null, true);
 				wp_enqueue_script('jquery-easing');
 
 				// jQuery Timers
-				wp_register_script('jquery-timers', $this->plugin_url . '/galleryview/js/jquery.timers.js', 'jquery', null, false);
+				wp_register_script('jquery-timers', $this->plugin_url . '/galleryview/js/jquery.timers.js', 'jquery', null, true);
 				wp_enqueue_script('jquery-timers');
 
 				// jQuery GalleryView
-				wp_register_script('jquery-galleryview', $this->plugin_url . '/galleryview/js/jquery.galleryview.js', array('jquery', 'jquery-timers', 'jquery-easing'), null, false);
+				wp_register_script('jquery-galleryview', $this->plugin_url . '/galleryview/js/jquery.galleryview.js', array('jquery', 'jquery-timers', 'jquery-easing'), null, true);
 				wp_enqueue_script('jquery-galleryview');
 			}
 		}
