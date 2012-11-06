@@ -70,10 +70,10 @@ if (!class_exists('nggGalleryview')) {
 
 }
 
+// ######################
+// PressTrends Plugin API
+// ######################
 
-/**
-* PressTrends Plugin API
-*/
 	function presstrends_NextGEN-Galleryview_plugin() {
 
 		// PressTrends Account API Key
