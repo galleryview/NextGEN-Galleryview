@@ -74,7 +74,7 @@ if (!class_exists('nggGalleryview')) {
 // PressTrends Plugin API
 // ######################
 
-	function presstrends_NextGEN-Galleryview_plugin() {
+	function presstrends_NextGEN_Galleryview_plugin() {
 
 		// PressTrends Account API Key
 		$api_key = 'l325qf6uap6dnjrrutams299ajr5zsts8wgr';
