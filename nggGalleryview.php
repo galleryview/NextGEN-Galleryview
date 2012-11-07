@@ -5,7 +5,7 @@ Plugin URI: http://bhubbard.github.com/NextGEN-Galleryview/
 Description: Add the script files and template for the jQuery Plugin Galleryview integration from Jack Anderson (http://www.spaceforaname.com/galleryview/). Use the shortcode [nggallery id=x template="galleryview"] to show the new layout. Plugin originally created by Alex Rabe.
 Author: Alex Rabe, Brandon Hubbard
 Author URI: http://brandonhubbard.com/
-Version: 1.1.1
+Version: 1.1.2
 */
 
 if (!class_exists('nggGalleryview')) {
@@ -41,7 +41,7 @@ if (!class_exists('nggGalleryview')) {
 		// GalleryView Styles
 		function ngg_galleryview_styles() {
 			if ( !is_admin() ) { // we do not want our styles to load in the dashboard
-				wp_enqueue_style('galleryview', $this->plugin_url . '/galleryview/css/galleryview.css', false, null, 'all');
+				wp_enqueue_style('galleryview', $this->plugin_url . 'galleryview/css/galleryview.css', false, null, 'all');
 			}
 		}
 
@@ -58,11 +58,11 @@ if (!class_exists('nggGalleryview')) {
 				wp_enqueue_script('jquery-easing');
 
 				// jQuery Timers
-				wp_register_script('jquery-timers', $this->plugin_url . '/galleryview/js/jquery.timers.js', 'jquery', null, false);
+				wp_register_script('jquery-timers', $this->plugin_url . 'galleryview/js/jquery.timers.js', 'jquery', null, false);
 				wp_enqueue_script('jquery-timers');
 
 				// jQuery GalleryView
-				wp_register_script('jquery-galleryview', $this->plugin_url . '/galleryview/js/jquery.galleryview.js', array('jquery', 'jquery-timers', 'jquery-easing'), null, false);
+				wp_register_script('jquery-galleryview', $this->plugin_url . 'galleryview/js/jquery.galleryview.js', array('jquery', 'jquery-timers', 'jquery-easing'), null, false);
 				wp_enqueue_script('jquery-galleryview');
 			}
 		}
