@@ -5,7 +5,7 @@ Plugin URI: http://bhubbard.github.com/NextGEN-Galleryview/
 Description: Add the script files and template for the jQuery Plugin Galleryview integration from Jack Anderson (http://www.spaceforaname.com/galleryview/). Use the shortcode [nggallery id=x template="galleryview"] to show the new layout. Plugin originally created by Alex Rabe.
 Author: Alex Rabe, Brandon Hubbard
 Author URI: http://brandonhubbard.com/
-Version: 1.1.2
+Version: 1.1.3
 */
 
 if (!class_exists('nggGalleryview')) {
@@ -136,5 +136,5 @@ if (!class_exists('nggGalleryview')) {
 	}
 
 // PressTrends WordPress Action
-add_action('admin_init', 'presstrends_NextGEN-Galleryview_plugin');
+add_action('admin_init', 'presstrends_NextGEN_Galleryview_plugin');
 		
