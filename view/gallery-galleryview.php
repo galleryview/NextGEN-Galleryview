@@ -13,6 +13,11 @@ Follow variables are useable :
 **/
 
 ?>
+
+<style>
+#<?php echo $gallery->anchor ?>{display:none;}
+</style>
+
 <?php if (!defined ('ABSPATH')) die ('No direct access allowed'); ?><?php if (!empty ($gallery)) : ?>
 
 <div id="<?php echo $gallery->anchor ?>" class="galleryview">
