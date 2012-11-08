@@ -21,7 +21,7 @@ If you wish to modify this template please create a folder called nggallery with
 
 <!-- Css to hide gallery unitl loads -->
 <style>
-#<?php echo $gallery->anchor ?>{display:none;}
+#<?php echo $gallery->anchor; ?>{display:none;}
 </style>
 
 <?php if (!defined('ABSPATH')) die ('No direct access allowed'); ?><?php if (!empty ($gallery)) : ?>
