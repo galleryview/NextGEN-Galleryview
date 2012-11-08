@@ -29,7 +29,7 @@ If you wish to modify this template please create a folder called nggallery with
 <div id="<?php echo $gallery->anchor; ?>" class="galleryview">
   	<ul class="<?php echo $gallery->anchor; ?>">
   	<?php foreach ($images as $image) : ?>
-	    <li><div class="filmstrip-borders"></div><img src="<?php echo $image->imageURL;  ?>" alt="<?php echo $image->alttext; ?>" data-description="<?php echo $image->description; ?>" title="<?php echo $image->alttext; ?>" <?php echo $image->size; ?>  /></li>
+	    <li class="<?php echo $image->pid; ?>"><img src="<?php echo $image->imageURL;  ?>" alt="<?php echo $image->alttext; ?>" data-description="<?php echo $image->description; ?>" title="<?php echo $image->alttext; ?>" <?php echo $image->size; ?>  /></li>
 	<?php endforeach; ?>
   	</ul>
 </div>
