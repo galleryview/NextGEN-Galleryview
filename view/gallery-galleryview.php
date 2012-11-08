@@ -31,7 +31,7 @@ If you wish to modify this template please create a folder called nggallery with
 	<!-- Thumbnails -->
 	<?php foreach ($images as $image) : ?>
 	<div class="panel">
-		<img src="<?php echo $image->thumbnailURL;  ?>" alt="<?php echo $image->alttext ?>" title="<?php echo $image->alttext ?>" data-description="<?php echo $image->description ?>" <?php echo $image->size ?> />
+		<img src="<?php echo $image->thumbnailURL;  ?>" alt="<?php echo $image->alttext ?>" title="<?php echo $image->alttext ?>" data-description="<?php echo $image->description ?>" <?php echo $image->size ?> <?php echo $image->thumbcode ?> />
 	</div>
  	<?php endforeach; ?>
   	<ul class="filmstrip">
