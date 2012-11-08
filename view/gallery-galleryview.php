@@ -22,6 +22,7 @@ If you wish to modify this template please create a folder called nggallery with
 <!-- Css to hide gallery unitl loads -->
 <style>
 #<?php echo $gallery->anchor ?>{display:none;}
+.gv_galleryWrap { position: relative; background: #f1f1f1; font-size: 10pt;  }
 </style>
 
 <?php if (!defined('ABSPATH')) die ('No direct access allowed'); ?><?php if (!empty ($gallery)) : ?>
@@ -30,12 +31,12 @@ If you wish to modify this template please create a folder called nggallery with
 	<!-- Thumbnails -->
 	<?php foreach ($images as $image) : ?>
 	<div class="panel">
-		<img src="<?php echo $image->imageURL ?>" alt="<?php echo $image->alttext ?>" title="<?php echo $image->alttext ?>" data-description="<?php echo $image->description ?>" <?php echo $image->size ?> />
+		<img src="<?php echo $image->thumbnailURL;  ?>" alt="<?php echo $image->alttext ?>" title="<?php echo $image->alttext ?>" data-description="<?php echo $image->description ?>" <?php echo $image->size ?> />
 	</div>
  	<?php endforeach; ?>
   	<ul class="filmstrip">
   	<?php foreach ($images as $image) : ?>
-	    <li><div class="filmstrip-borders"></div><img src="<?php echo $image->thumbnailURL ?>" alt="<?php echo $image->alttext ?>" title="<?php echo $image->alttext ?>" /></li>
+	    <li><div class="filmstrip-borders"></div><img src="<?php echo $image->imageURL;  ?>" alt="<?php echo $image->alttext ?>" title="<?php echo $image->alttext ?>" <?php echo $image->size ?>  /></li>
 	<?php endforeach; ?>
   	</ul>
 
@@ -55,7 +56,7 @@ If you wish to modify this template please create a folder called nggallery with
 		show_panels: true, 				//BOOLEAN - flag to show or hide panel portion of gallery
 		show_panel_nav: true, 			//BOOLEAN - flag to show or hide panel navigation buttons
 		enable_overlays: false, 			//BOOLEAN - flag to show or hide panel overlays
-		panel_width: 620, 				//INT - width of gallery panel (in pixels)
+		panel_width: 660, 				//INT - width of gallery panel (in pixels)
 		panel_height: 300, 				//INT - height of gallery panel (in pixels)
 		panel_animation: 'fade', 		//STRING - animation method for panel transitions (crossfade,fade,slide,none)
 		panel_scale: 'crop', 			//STRING - cropping option for panel images (crop = scale image and fit to aspect ratio determined by panel_width and panel_height, fit = scale image and preserve original aspect ratio)
