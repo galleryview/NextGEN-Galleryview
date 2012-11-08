@@ -26,19 +26,12 @@ If you wish to modify this template please create a folder called nggallery with
 
 <?php if (!defined('ABSPATH')) die ('No direct access allowed'); ?><?php if (!empty ($gallery)) : ?>
 
-<div id="<?php echo $gallery->anchor ?>" class="galleryview">
-	<!-- Thumbnails -->
-	<?php foreach ($images as $image) : ?>
-	<div class="panel">
-		<img src="<?php echo $image->thumbnailURL;  ?>" alt="<?php echo $image->alttext; ?>" title="<?php echo $image->alttext; ?>"  <?php echo $image->size; ?> <?php echo $image->thumbcode; ?> />
-	</div>
- 	<?php endforeach; ?>
-  	<ul class="filmstrip">
+<div id="<?php echo $gallery->anchor; ?>" class="galleryview">
+  	<ul class="<?php echo $gallery->anchor; ?>">
   	<?php foreach ($images as $image) : ?>
 	    <li><div class="filmstrip-borders"></div><img src="<?php echo $image->imageURL;  ?>" alt="<?php echo $image->alttext; ?>" data-description="<?php echo $image->description; ?>" title="<?php echo $image->alttext; ?>" <?php echo $image->size; ?>  /></li>
 	<?php endforeach; ?>
   	</ul>
-
 </div>
 
 <div class="clear"><br /></div>
