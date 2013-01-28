@@ -5,7 +5,7 @@ Plugin URI: http://bhubbard.github.com/NextGEN-Galleryview/
 Description: Add the script files and template for the jQuery Plugin Galleryview integration from Jack Anderson (http://www.spaceforaname.com/galleryview/). Use the shortcode [nggallery id=x template="galleryview"] to show the new layout. Plugin originally created by Alex Rabe.
 Author: Alex Rabe, Brandon Hubbard
 Author URI: http://brandonhubbard.com/
-Version: 1.2
+Version: 1.3
 */
 
 if (!class_exists('nggGalleryview')) {
@@ -19,29 +19,29 @@ if (!class_exists('nggGalleryview')) {
 			$this->plugin_url = WP_PLUGIN_URL . '/' . plugin_basename( dirname(__FILE__) ) . '/';
 
 			// Load Scripts, Styles, and Templates
-			add_action('wp_print_scripts', array(&$this, 'ngg_galleryview_scripts') );
 			add_action('wp_print_styles', array(&$this, 'ngg_galleryview_styles') );
+			add_action('wp_print_scripts', array(&$this, 'ngg_galleryview_scripts') );
 			add_filter('ngg_render_template', array(&$this, 'add_template'), 10, 2);
 		}
 
-		// Add our Template
+// Add our Template
 		function add_template( $path, $template_name = false) {
-			// Check theme for template first
-			if ( file_exists (TEMPLATEPATH . "/nggallery/gallery-galleryview.php")) {
-				$template_name == 'gallery-galleryview';
-				$path = TEMPLATEPATH . "/nggallery/gallery-galleryview.php";
+			if ( preg_match('/^gallery-galleryview(-.+)?$/', $template_name) ) {
+			   // Check theme for template first
+			   if ( file_exists (get_stylesheet_directory() . "/nggallery/$template_name.php")) {
+				   $path = get_stylesheet_directory() . "/nggallery/$template_name.php";
 				}
-			else  {
-				$template_name == 'gallery-galleryview';
-				$path = WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/view/gallery-galleryview.php';
+				else  {
+				   $path = WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/view/gallery-galleryview.php';
 				}
+			}
 			return $path;
 		}
 
 		// GalleryView Styles
 		function ngg_galleryview_styles() {
 			if ( !is_admin() ) { // we do not want our styles to load in the dashboard
-				wp_enqueue_style('galleryview', $this->plugin_url . 'galleryview/css/galleryview.css', false, null, 'all');
+				wp_enqueue_style('galleryview-css', $this->plugin_url . 'galleryview/css/galleryview.css', false, null, 'all');
 			}
 		}
 
@@ -54,7 +54,7 @@ if (!class_exists('nggGalleryview')) {
 				wp_enqueue_script('jquery');
 
 				// jQuery Easing via CDN
-				wp_register_script('jquery-easing', 'http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js', 'jquery', null, false);
+				wp_register_script('jquery-easing', '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js', 'jquery', null, false);
 				wp_enqueue_script('jquery-easing');
 
 				// jQuery Timers
