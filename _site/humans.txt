@@ -1,0 +1,16 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Brandon Hubbard - @bhubbard
+
+# THANKS
+
+    Alex Rabe - Original Creator of this plugin
+    Jack Wanders (@jackwanders) - Creator of GalleryView
+
+# TECHNOLOGY COLOPHON
+
+    HTML5, CSS3
+    jQuery, Modernizr, Twitter Bootstrap

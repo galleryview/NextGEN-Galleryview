@@ -1,0 +1,39 @@
+html, body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+.header-wrapper {
+	background-color: #432a49;
+	color:#fff;
+	text-align: center;
+	padding-top: 30px;
+	font-weight: 400;
+}
+
+.header-wrapper h1 {
+	font-weight: 600;
+}
+
+.header-wrapper a {
+	color: #af90b6;
+}
+
+
+
+.slideshowhero {
+	width:100%;
+}
+
+.usagewrapper {
+	background-color: #8bb79d;
+	padding:30px 0;
+}
+
+
+.btn {
+	padding: 10px 0;
+}
+
+.well-courtesy {
+	margin: 20px 0;
+}
