@@ -5,6 +5,9 @@
 	Version:	3.0 DEVELOPMENT
 
   	See README.txt for instructions on how to markup your HTML
+  	
+  	
+  	Resizefunctionality by Jeroen Penninck
 */
 
 // Make sure Object.create is available in the browser (for our prototypal inheritance)
@@ -22,8 +25,8 @@ if (typeof Object.create !== 'function') {
 	var gvImage = function (img) {
 
 		this.src = { 
-			panel: img.attr('src'),
-			frame: img.data('frame') || img.attr('src')
+			panel: img.data('original') || img.attr('src'),
+			frame: img.data('frame') || img.data('original') || img.attr('src')
 		};
 		this.scale = {
 			panel: null,
@@ -37,10 +40,10 @@ if (typeof Object.create !== 'function') {
 		};
 		this.href = null;
 		this.dom_obj = null;
-		
+
 		return this;
 	},
-	
+
 	// utility function wrapper
 	gv = {
 		getInt: function(i) {
@@ -74,7 +77,7 @@ if (typeof Object.create !== 'function') {
 					this.getInt(elem.css('borderBottomWidth'));
 		}
 	},
-	
+
 	/*
 		GalleryView - Object
 			The main gallery class
@@ -89,14 +92,14 @@ if (typeof Object.create !== 'function') {
 			'.gv_panelNavNext',	'.gv_panelNavPrev',	'.gv_overlay',			'.gv_showOverlay',
 			'.gv_imageStore'
 		],
-		
+
 		// create a jQuery element and apply attributes
 		createElem: function(attrs,elem) {
 			elem = document.createElement(elem);
 			var $elem = $(elem);
 			return $elem.attr(attrs);
 		},
-		
+
 		// get the position of an element with respect
 		// to the gallery wrapper
 		getPos: function (el) {
@@ -107,19 +110,19 @@ if (typeof Object.create !== 'function') {
 				left = 0,
 				top = 0,
 				gPos, gLeft, gTop;
-				
+
 			if (!el) { return { top: 0, left: 0 }; }
-			
+
 			if (el.offsetParent) {
 				do {
 					left += el.offsetLeft;
 					top += el.offsetTop;
 				} while (el = el.offsetParent);
 			}
-			
+
 			//If we want the position of the gallery itself, return it
 			if (el_id === self.id) { return { left: left, top: top }; }
-			
+
 			//Otherwise, get position of element relative to gallery
 			else {
 				gPos = self.getPos(dom.galleryWrap);
@@ -128,7 +131,7 @@ if (typeof Object.create !== 'function') {
 				return { left: left - gLeft, top: top - gTop };
 			}
 		},
-		
+
 		// determine if mouse is within the boundary of the gallery wrapper
 		mouseIsOverGallery: function (x, y) {
 			var self = this,
@@ -136,10 +139,10 @@ if (typeof Object.create !== 'function') {
 				pos = this.getPos(dom.gv_galleryWrap),
 				top = pos.top,
 				left = pos.left;
-				
+
 			return x > left && x < left + gv.outerWidth(dom.gv_galleryWrap) && y > top && y < top + gv.outerHeight(dom.gv_galleryWrap);
 		},
-		
+
 		// determine if mouse is within the boundary of the panel
 		mouseIsOverPanel: function (x, y) {
 			var self = this,
@@ -148,10 +151,10 @@ if (typeof Object.create !== 'function') {
 				gPos = this.getPos(dom.gv_galleryWrap),
 				top = pos.top + gPos.top,
 				left = pos.left + gPos.left;
-				
+
 			return x > left && x < left + gv.outerWidth(dom.gv_panelWrap) && y > top && y < top + gv.outerHeight(dom.gv_panelWrap);
 		},
-		
+
 		// create gvImage objects for each image in gallery
 		storeImages: function() {
 			var self = this;
@@ -162,8 +165,10 @@ if (typeof Object.create !== 'function') {
 				self.gvImages[i] = new gvImage($(img));
 			});
 		},
-		
-		setDimensions: function() {
+
+		setDimensions: function(create) {
+			create = typeof create !== 'undefined' ? create : true;
+
 			var self = this,
 				dom = this.dom,
 				widths = {
@@ -183,7 +188,7 @@ if (typeof Object.create !== 'function') {
 					fsFull: 0
 				},
 				panels = [];
-			
+
 			// nav
 			if(this.filmstripOrientation === 'horizontal') {
 				dom.gv_navWrap.css({
@@ -203,7 +208,7 @@ if (typeof Object.create !== 'function') {
 					});
 				}
 			}
-			
+
 			if(this.filmstripOrientation === 'vertical' && widths.filmstrip < (widths.prev + widths.play + widths.next)) {
 				dom.gv_navWrap.css({
 					width: Math.max(widths.prev, widths.play, widths.next),
@@ -215,7 +220,7 @@ if (typeof Object.create !== 'function') {
 					height: Math.max(heights.prev,heights.play,heights.next)
 				});
 			}
-			
+
 			// panels
 			dom.gv_panel.css({
 				width: this.opts.panel_width,
@@ -228,16 +233,26 @@ if (typeof Object.create !== 'function') {
 			dom.gv_overlay.css({
 				width: this.opts.panel_width
 			});
-			
-			
-			
-			$.each(this.gvImages,function(i,img) {
-				dom.gv_panelWrap.append(dom.gv_panel.clone(true));
-			});
-			
-			dom.gv_panels = dom.gv_panelWrap.find('.gv_panel');
-			dom.gv_panels.remove();
-			
+
+
+			if(create){
+				$.each(this.gvImages,function(i,img) {
+					dom.gv_panelWrap.append(dom.gv_panel.clone(true));
+				});
+
+				dom.gv_panels = dom.gv_panelWrap.find('.gv_panel');
+				dom.gv_panels.remove();
+
+			}else{
+				this_opts = this.opts;
+				$.each(dom.gv_panels,function(i,panel) {
+					$(panel).css({
+						width: this_opts.panel_width,
+						height: this_opts.panel_height
+					});
+				});
+			}
+
 			// filmstrip
 			dom.gv_thumbnail.css({
 				width: this.opts.frame_width,
@@ -249,8 +264,22 @@ if (typeof Object.create !== 'function') {
 				marginRight: this.opts.frame_gap,
 				marginBottom: this.opts.frame_gap
 			});
-			
-			
+
+			if(!create){
+				//also change clones
+				dom.gv_filmstrip.find('.gv_thumbnail').css({
+					width: this.opts.frame_width,
+					height: this.opts.frame_height
+				});
+				dom.gv_filmstrip.find('.gv_frame').css({
+					width: gv.outerWidth(dom.gv_thumbnail),
+					height: gv.outerHeight(dom.gv_thumbnail) + (this.opts.show_captions ? gv.outerHeight(dom.gv_caption) : 0),
+					marginRight: this.opts.frame_gap,
+					marginBottom: this.opts.frame_gap
+				});
+			}
+
+
 			if(this.filmstripOrientation === 'horizontal') {
 				this.filmstripSize = Math.floor((gv.outerWidth(dom.gv_panelWrap) - gv.outerWidth(dom.gv_navWrap)) / (gv.outerWidth(dom.gv_frame) + this.opts.frame_gap));
 				widths.fsMax = this.filmstripSize * (gv.outerWidth(dom.gv_frame) + this.opts.frame_gap);
@@ -272,7 +301,7 @@ if (typeof Object.create !== 'function') {
 				width: widths.filmstrip,
 				height: heights.filmstrip
 			});
-			
+
 			// gallery
 			if(this.opts.show_filmstrip) {
 				if(this.filmstripOrientation === 'horizontal') {
@@ -292,21 +321,23 @@ if (typeof Object.create !== 'function') {
 					height: gv.outerHeight(dom.gv_panelWrap)
 				});	
 			}
-			
+
 			dom.gv_galleryWrap.css({
 					width: gv.outerWidth(dom.gv_gallery),
 					height: gv.outerHeight(dom.gv_gallery),
 					padding: this.opts.frame_gap
 			});
 		},
-		
-		setPositions: function() {
+
+		setPositions: function(create) {
+			create = typeof create !== 'undefined' ? create : true;
+
 			var self = this,
 				dom = this.dom,
 				navVert = 0, fsVert = 0,
 				navHorz = 0, fsHorz = 0,
 				vert, horz;
-			
+
 			// determine vertical or horizontal offset
 			// if negative, apply to filmstrip, otherwise apply to navbar
 			if(this.filmstripOrientation === 'horizontal') {
@@ -318,15 +349,15 @@ if (typeof Object.create !== 'function') {
 				if(horz < 0) { fsHorz = -1 * horz; }
 				else { navHorz = horz; }
 			}
-			
+
 			// for horizontal filmstrips w/o navigation, center the filmstrip under the panel
 			if(!this.opts.show_filmstrip_nav && this.filmstripOrientation === 'horizontal') {
 				fsHorz = Math.floor((gv.outerWidth(dom.gv_panelWrap) - gv.outerWidth(dom.gv_filmstripWrap)) / 2);
 			}
-			
+
 			dom.gv_panelNavNext.css({ top: (gv.outerHeight(dom.gv_panel) - gv.outerHeight(dom.gv_panelNavNext)) / 2, right: 10 });
 			dom.gv_panelNavPrev.css({ top: (gv.outerHeight(dom.gv_panel) - gv.outerHeight(dom.gv_panelNavPrev)) / 2, left: 10 });
-			
+
 			// pin elements to gallery corners according to filmstrip position
 			switch(this.opts.filmstrip_position) {
 				case 'top':
@@ -334,26 +365,26 @@ if (typeof Object.create !== 'function') {
 					dom.gv_panelWrap.css({ bottom: 0, left: 0 });
 					dom.gv_filmstripWrap.css({ top: fsVert, left: fsHorz });
 					break;
-				
+
 				case 'right':
 					dom.gv_navWrap.css({ bottom: navVert, right: navHorz });
 					dom.gv_panelWrap.css({ top: 0, left: 0 });
 					dom.gv_filmstripWrap.css({ top: fsVert, right: fsHorz });
 					break;
-				
+
 				case 'left':
 					dom.gv_navWrap.css({ bottom: navVert, left: navHorz });
 					dom.gv_panelWrap.css({ top: 0, right: 0 });
 					dom.gv_filmstripWrap.css({ top: fsVert, left: fsHorz });
 					break;
-				
+
 				default:
 					dom.gv_navWrap.css({ bottom: navVert, right: navHorz });
 					dom.gv_panelWrap.css({ top: 0, left: 0 });
 					dom.gv_filmstripWrap.css({ bottom: fsVert, left: fsHorz });
 					break;
 			}
-			
+
 			if(this.opts.overlay_position === 'top') {
 				dom.gv_overlay.css({ top: 0, left: -99999 });
 				dom.gv_showOverlay.css({ top: 0, left: 0 });
@@ -361,65 +392,69 @@ if (typeof Object.create !== 'function') {
 				dom.gv_overlay.css({ bottom: 0, left: -99999 });
 				dom.gv_showOverlay.css({ bottom: 0, left: 0 });
 			}
-			
-			if(!this.opts.show_filmstrip_nav) {
-				dom.gv_navWrap.remove();	
+
+			if(create){
+				if(!this.opts.show_filmstrip_nav) {
+					dom.gv_navWrap.remove();	
+				}
 			}
 		},
-		
-		buildFilmstrip: function() {
+
+		buildFilmstrip: function(create) {
+			create = typeof create !== 'undefined' ? create : true;
+
 			var self = this,
 				dom = this.dom,
 				framesLength = this.gvImages.length * ((this.filmstripOrientation === 'horizontal' ? this.opts.frame_width : this.opts.frame_height) + this.opts.frame_gap);
-			
-			dom.gv_frame.append(dom.gv_thumbnail);
-			if(this.opts.show_captions) { 
-				dom.gv_frame.append(dom.gv_caption);
-			}
-			dom.gv_thumbnail.css('opacity',this.opts.frame_opacity);
-			
-			dom.gv_thumbnail.bind({
-				mouseover: function() {
-					if(!$(this).hasClass('current')) {
-						$(this).stop().animate({opacity:1},250);
-					}
-				},
-				mouseout: function() {
-					if(!$(this).hasClass('current')) {
-						$(this).stop().animate({opacity:self.opts.frame_opacity},250);
-					}
+
+			if(create){
+				dom.gv_frame.append(dom.gv_thumbnail);
+				if(this.opts.show_captions) { 
+					dom.gv_frame.append(dom.gv_caption);
 				}
-			});
-			
-			// Drop a clone of the frame element into the filmstrip for each source image
-			$.each(this.gvImages,function(i,img) {
-				dom.gv_frame.clone(true).prependTo(dom.gv_filmstrip);
-			});
-			
+				dom.gv_thumbnail.css('opacity',this.opts.frame_opacity);
+
+				dom.gv_thumbnail.bind({
+					mouseover: function() {
+						if(!$(this).hasClass('current')) {
+						$(this).stop().animate({opacity:1},250);
+						}
+					},
+					mouseout: function() {
+						if(!$(this).hasClass('current')) {
+							$(this).stop().animate({opacity:self.opts.frame_opacity},250);
+						}
+					}
+				});
+
+				// Drop a clone of the frame element into the filmstrip for each source image
+				$.each(this.gvImages,function(i,img) {
+					dom.gv_frame.clone(true).prependTo(dom.gv_filmstrip);
+				});
+			}
+
 			dom.gv_filmstrip.css({
 				width: gv.outerWidth(dom.gv_frame),
 				height: gv.outerHeight(dom.gv_frame)
 			});
-			
+      
+			this.framesLength=framesLength;
+
 			// If we are scrolling the filmstrip, and we can't show all frames at once,
 			// make two additional copies of each frame
 			if(this.opts.filmstrip_style === 'scroll') {
 				if(this.filmstripOrientation === 'horizontal') {
-					if(framesLength > gv.innerWidth(dom.gv_filmstripWrap)) {
-						dom.gv_filmstrip.find('.gv_frame').clone(true).appendTo(dom.gv_filmstrip).clone(true).appendTo(dom.gv_filmstrip);
-						dom.gv_filmstrip.css('width',framesLength * 3);
-						this.scrolling = true;
-					} else {
-						dom.gv_filmstrip.css('width',framesLength);
+					if(create){
+						dom.gv_filmstrip.find('.gv_frame').clone(true).addClass("hideifnoscrolling").appendTo(dom.gv_filmstrip).clone(true).appendTo(dom.gv_filmstrip);
 					}
+          
+					this.activateScrolling(framesLength > gv.innerWidth(dom.gv_filmstripWrap));
 				} else {
-					if(framesLength > gv.innerHeight(dom.gv_filmstripWrap)) {
+					if(create){
 						dom.gv_filmstrip.find('.gv_frame').clone(true).appendTo(dom.gv_filmstrip).clone(true).appendTo(dom.gv_filmstrip);
-						dom.gv_filmstrip.css('height',framesLength * 3);
-						this.scrolling = true;
-					} else {
-						dom.gv_filmstrip.css('height',framesLength);
 					}
+          
+					this.activateScrolling(framesLength > gv.innerHeight(dom.gv_filmstripWrap));
 				}
 			} else {
 				dom.gv_filmstrip.css({
@@ -427,37 +462,90 @@ if (typeof Object.create !== 'function') {
 					height: parseInt(dom.gv_filmstripWrap.css('height'),10)+this.opts.frame_gap
 				});
 			}
-			dom.gv_frames = dom.gv_filmstrip.find('.gv_frame');
-			$.each(dom.gv_frames,function(i,frame) {
-				$(frame).data('frameIndex',i);						  
-			});
-			dom.gv_thumbnails = dom.gv_filmstrip.find('div.gv_thumbnail');
-		},
-		
-		buildGallery: function() {
-			var self = this,
-				dom = this.dom;
-			
-			this.setDimensions();
-			this.setPositions();
-			
-			if(this.opts.show_filmstrip) {
-				this.buildFilmstrip();
+
+			if(create){
+				dom.gv_frames = dom.gv_filmstrip.find('.gv_frame');
+				$.each(dom.gv_frames,function(i,frame) {
+					$(frame).data('frameIndex',i);						  
+				});
+				dom.gv_thumbnails = dom.gv_filmstrip.find('div.gv_thumbnail');
 			}
 		},
-		
+
+		activateScrolling: function(activate){
+
+			// activate / deactivate scrolling and set the correct filmstripsize
+			var dom = this.dom;
+			if(this.filmstripOrientation === 'horizontal') {
+				if(activate) {
+					dom.gv_filmstrip.css('width',this.framesLength * 3);
+					this.scrolling = true;
+				} else {
+					dom.gv_filmstrip.css('width',this.framesLength);
+					this.scrolling = false;
+				}
+			}else{
+				if(activate) {
+					dom.gv_filmstrip.css('height',this.framesLength * 3);
+					this.scrolling = true;
+				} else {
+					dom.gv_filmstrip.css('height',this.framesLength);
+					this.scrolling = false;
+				}
+			}
+      
+			// show / hide the extra thumbs used in the scroller
+			if(activate){
+				this.dom.gv_filmstrip.find('.hideifnoscrolling').show();
+			}else{
+				this.dom.gv_filmstrip.find('.hideifnoscrolling').hide();
+			}
+      
+			//stop thumb animation
+			if(dom.gv_thumbnails!=undefined){
+				dom.gv_thumbnails.stop(true,true);
+			}
+      
+			//scroll to correct location
+			this.dom.gv_filmstrip.stop(true,true).css({left:0, top:0});
+      
+			if(activate) {
+				var currentFrame = this.frameIterator;
+				this.frameIterator=0;//scroll from position 0
+				if(dom.gv_thumbnails!=undefined){
+					this.updateFilmstrip(currentFrame);
+				}
+
+				this.dom.gv_filmstrip.stop(true,true);
+			}
+		},
+
+		buildGallery: function(create) {
+			create = typeof create !== 'undefined' ? create : true;
+
+			var self = this,
+				dom = this.dom;
+
+			this.setDimensions(create);
+			this.setPositions(create);
+
+			if(this.opts.show_filmstrip) {
+				this.buildFilmstrip(create);
+			}
+		},
+
 		showInfoBar: function() {
 			if(!this.opts.show_infobar) { return; }
 			var self = this,
 				dom = this.dom;
-			
+
 			dom.gv_infobar.stop().stopTime('hideInfoBar_' + self.id).html((this.iterator+1) + ' of ' + this.numImages).show().css('opacity',this.opts.infobar_opacity);
-			
+
 			dom.gv_infobar.oneTime(2000 + this.opts.transition_speed,'hideInfoBar_' + self.id,function() {
 					dom.gv_infobar.fadeOut(1000);
 				});
 		},
-		
+
 		initImages: function() {
 			var self = this,
 				dom = this.dom;
@@ -467,28 +555,41 @@ if (typeof Object.create !== 'function') {
 				img.bind('load.galleryview',function() {
 					var _img = $(this),
 						index = _img.data('index'),
-						width = this.width,
-						height = this.height,
 						parent = dom[(_img.data('parent')).type].eq((_img.data('parent')).index),
-						widthFactor = gv.innerWidth(parent) / width,
-						heightFactor = gv.innerHeight(parent) / height,
 						parentType = parent.hasClass('gv_panel') ? 'panel' : 'frame',
-						heightOffset = 0, widthOffset = 0;
-					
-					gvImage.scale[parentType] = self.opts[parentType+'_scale'] === 'fit' ? Math.min(widthFactor,heightFactor) : Math.max(widthFactor,heightFactor);
-					
-					widthOffset = Math.round((gv.innerWidth(parent) - (width * gvImage.scale[parentType])) / 2);
-					heightOffset = Math.round((gv.innerHeight(parent) - (height * gvImage.scale[parentType])) / 2);	
-					
-					_img.css({
-						width: width * gvImage.scale[parentType],
-						height: height * gvImage.scale[parentType],
-						top: heightOffset,
-						left: widthOffset
+            width = this.width,
+            height = this.height;
+
+					_img.bind("resizegalleryimage", function(){
+						var _img = $(this),
+							widthFactor = gv.innerWidth(parent) / width,
+							heightFactor = gv.innerHeight(parent) / height,
+							heightOffset = 0, widthOffset = 0;
+
+						gvImage.scale[parentType] = self.opts[parentType+'_scale'] === 'fit' ? Math.min(widthFactor,heightFactor) : Math.max(widthFactor,heightFactor);
+
+						//if can not upscale
+						if(!self.opts.panel_can_upscale_image && gvImage.scale[parentType]>1){
+							gvImage.scale[parentType]=1;
+						}
+
+
+						widthOffset = Math.round((gv.innerWidth(parent) - (width * gvImage.scale[parentType])) / 2);
+						heightOffset = Math.round((gv.innerHeight(parent) - (height * gvImage.scale[parentType])) / 2);	
+
+						_img.css({
+							width: width * gvImage.scale[parentType],
+							height: height * gvImage.scale[parentType],
+							top: heightOffset,
+							left: widthOffset
+						});
 					});
+
+					_img.trigger("resizegalleryimage");
+
 					_img.hide().css('visibility','visible');
-					_img.remove().appendTo(parent);
-					
+					_img.detach().appendTo(parent);
+
 					if(parentType === 'frame') {
 						_img.fadeIn();
 						parent.parent().removeClass('gv_frame-loading');
@@ -503,7 +604,7 @@ if (typeof Object.create !== 'function') {
 						_img.show();
 					}
 				});
-				
+
 				// store eventual image container as data property
 				// append to temporary storage element and set src
 				if(self.opts.show_panels) {
@@ -512,19 +613,19 @@ if (typeof Object.create !== 'function') {
 						.appendTo(dom.gv_imageStore)
 						.attr('src',gvImage.src.panel);
 				}
-				
+
 				if(self.opts.show_filmstrip) {
 					img.clone(true)
 						.data('parent',{type:'gv_thumbnails',index:i})
 						.appendTo(dom.gv_imageStore)
 						.attr('src',gvImage.src.frame);
-					
+
 					if(dom.gv_frames.length > dom.gv_panels.length) {
 						img.clone(true)
 							.data('parent',{type:'gv_thumbnails',index:i+self.numImages})
 							.appendTo(dom.gv_imageStore)
 							.attr('src',gvImage.src.frame);
-							
+
 						img.clone(true)
 							.data('parent',{type:'gv_thumbnails',index:i+self.numImages+self.numImages})
 							.appendTo(dom.gv_imageStore)
@@ -533,21 +634,21 @@ if (typeof Object.create !== 'function') {
 				}
 			});
 		},
-		
+
 		showNext: function() {
 			this.navAction = 'next';
 			this.showItem(this.frameIterator+1);
 		},
-		
+
 		showPrev: function() {
 			this.navAction = 'prev';
 			this.showItem(this.frameIterator-1);
 		},
-		
+
 		showItem: function(i) {
 			if(isNaN(i)) { return; }
 			if(!this.opts.show_filmstrip) { i = i % this.numImages; }
-			
+
 			var self = this,
 				dom = this.dom,
 				frame_i = i,
@@ -556,7 +657,7 @@ if (typeof Object.create !== 'function') {
 				oldIterator,
 				panel,
 				playing = false;
-				
+
 			// don't go out of bounds
 			if(i >= this.numImages) {
 				i = i % this.numImages;
@@ -568,26 +669,30 @@ if (typeof Object.create !== 'function') {
 					frame_i = dom.gv_panels.length - 1;
 				}
 			}
-			
+
+			if( i == this.iterator ) {
+			  return;
+			}
+
 			panel = dom.gv_panels.eq(i);
-			
+
 			playing = this.playing;
-			
+
 			if(playing) {
 				this.stopSlideshow(false);
 			}
-			
+
 			this.unbindActions();
-			
+
 			dom.gv_gallery.oneTime(this.opts.transition_speed,'bindActions_' + self.id,function(){ if(playing) { self.startSlideshow(false); } self.bindActions(); });
-			
+
 			switch(this.opts.panel_animation) {
 				case 'crossfade':
-					dom.gv_panels.eq(this.iterator).fadeOut(this.opts.transition_speed,function(){$(this).remove();});
+					dom.gv_panels.eq(this.iterator).fadeOut(this.opts.transition_speed,function(){$(this).detach();});
 					panel.hide().prependTo(dom.gv_panelWrap).fadeIn(this.opts.transition_speed);
 					break;
 				case 'fade':
-					dom.gv_panels.eq(this.iterator).remove();
+					dom.gv_panels.eq(this.iterator).detach();
 					panel.hide().prependTo(dom.gv_panelWrap).fadeIn(this.opts.transition_speed);
 					break;
 				case 'slide':
@@ -598,36 +703,42 @@ if (typeof Object.create !== 'function') {
 						newPanelStart = -1 * gv.outerWidth(dom.gv_panel);
 						oldPanelEnd = gv.outerWidth(dom.gv_panel);
 					}
-					
+
 					panel.css({ left:newPanelStart }).appendTo(dom.gv_panelWrap).animate(
 						{ left:0 },
 						{ duration: this.opts.transition_speed,easing: this.opts.easing }
 					);
-					
+
 					dom.gv_panels.eq(this.iterator).animate(
 						{ left: oldPanelEnd },
-						{ duration: this.opts.transition_speed, easing: this.opts.easing, complete: function(){ $(this).remove(); } }
+						{ duration: this.opts.transition_speed, easing: this.opts.easing, complete: function(){ $(this).detach(); } }
 					);
 					break;
 				default:
-					dom.gv_panels.eq(this.iterator).remove();
+					dom.gv_panels.eq(this.iterator).detach();
 					panel.prependTo(dom.gv_panelWrap);
 					break;
 			}
-			
+
+			// call the resize event again because IE does not seem to like it
+			// when image are resized that are not on the screen...
+			$("img", this.gv_galleryWrap).trigger( "resizegalleryimage" );
+
 			this.updateOverlay(i);
-			
+
 			this.iterator = i;
 			this.updateFilmstrip(frame_i);
 			this.showInfoBar();
-			
-			
+
+			if(document.getSelection){
+				document.getSelection().removeAllRanges(); // fixes selection of item
+			}
 		},
-		
+
 		updateOverlay: function(i) {
 			var self = this,
 				dom = this.dom;
-			
+
 			if(this.overlayVisible) {
 				this.hideOverlay(null,function(){
 					dom.gv_overlay.html('<h4>'+self.gvImages[i].attrs.title+'</h4><p>'+self.gvImages[i].attrs.description+'</p>');
@@ -637,21 +748,21 @@ if (typeof Object.create !== 'function') {
 				dom.gv_overlay.html('<h4>'+self.gvImages[i].attrs.title+'</h4><p>'+self.gvImages[i].attrs.description+'</p>');
 				dom.gv_overlay.css(this.opts.overlay_position,-1 * dom.gv_overlay.outerHeight());
 			}
-			
+
 		},
-		
+
 		hideOverlay: function(s,callback) {
 			var self = this,
 				dom = this.dom,
 				endOverlay = {},
 				endButton = {},
 				speed = s || self.opts.transition_speed / 2;
-				
+
 			callback = callback || function(){};
-			
+
 			endOverlay[this.opts.overlay_position] = -1 * dom.gv_overlay.outerHeight();
 			endButton[this.opts.overlay_position] = 0;
-			
+
 			dom.gv_overlay.animate(endOverlay,{ 
 				duration: speed, 
 				easing: 'swing', 
@@ -661,10 +772,10 @@ if (typeof Object.create !== 'function') {
 				duration: speed,
 				easing: 'swing'
 			});
-			
+
 			this.overlayVisible = false;
 		},
-		
+
 		showOverlay: function(s) {
 			var self = this,
 				dom = this.dom,
@@ -672,21 +783,21 @@ if (typeof Object.create !== 'function') {
 				endOverlay = {},
 				endButton = {},
 				speed = s || self.opts.transition_speed / 2;
-			
+
 			startOverlay[this.opts.overlay_position] = -1 * dom.gv_overlay.outerHeight();
 			startOverlay.left = 0;
-			
+
 			endOverlay[this.opts.overlay_position] = 0;
-			
+
 			endButton[this.opts.overlay_position] = dom.gv_overlay.outerHeight();
-			
+
 			dom.gv_overlay.css(startOverlay);
 			dom.gv_overlay.animate(endOverlay,{ duration: speed, easing: 'swing' });
 			dom.gv_showOverlay.animate(endButton,{ duration: speed, easing: 'swing' });
-			
+
 			this.overlayVisible = true;
 		},
-		
+
 		updateFilmstrip: function(to) {
 			if(!this.opts.show_filmstrip) { this.frameIterator = to; return; }
 			var self = this,
@@ -694,21 +805,21 @@ if (typeof Object.create !== 'function') {
 				targetThumbs = dom.gv_thumbnails.eq(this.iterator),
 				filmstripIterator,
 				distance;
-			
+
 			if(this.scrolling) {
 				targetThumbs = targetThumbs.
 								add(dom.gv_thumbnails.eq(this.iterator + this.numImages)).
 								add(dom.gv_thumbnails.eq(this.iterator + (2 * this.numImages)));	
 			}
-			
+
 			dom.gv_thumbnails.removeClass('current').animate({ opacity: this.opts.frame_opacity });
 			targetThumbs.stop().addClass('current').animate({ opacity: 1 },500);
-			
-			
+
+
 			if(this.scrolling) {
 				if(this.filmstripOrientation === 'horizontal') {
 					distance = (gv.outerWidth(dom.gv_frame) + this.opts.frame_gap) * (this.frameIterator - to);
-					
+
 					if(distance > 0) {
 						distance = '+=' + Math.abs(distance);
 					} else {
@@ -730,7 +841,7 @@ if (typeof Object.create !== 'function') {
 					});
 				} else {
 					distance = (gv.outerHeight(dom.gv_frame) + this.opts.frame_gap) * (this.frameIterator - to);
-					
+
 					if(distance > 0) {
 						distance = '+=' + Math.abs(distance);
 					} else {
@@ -756,42 +867,42 @@ if (typeof Object.create !== 'function') {
 						}
 					});
 				}
-				
+
 			} else {
 				this.frameIterator = to;
 			}
 		},
-		
+
 		startSlideshow: function(changeIcon) {
 			var self = this,
 				dom = this.dom;
-				
+
 			if(!self.opts.enable_slideshow) { return; }
-			
+
 			if(changeIcon) {
 				dom.gv_navPlay.removeClass('gv_navPlay').addClass('gv_navPause');
 			}
 			this.playing = true;
 			dom.gv_galleryWrap.everyTime(this.opts.transition_interval,'slideshow_'+this.id,function(){ self.showNext(); });
 		},
-		
+
 		stopSlideshow: function(changeIcon) {
 			var self = this,
 				dom = this.dom;
-				
+
 			if(changeIcon) {
 				dom.gv_navPlay.removeClass('gv_navPause').addClass('gv_navPlay');
 			}
 			this.playing = false;
 			dom.gv_galleryWrap.stopTime('slideshow_'+this.id);
 		},
-		
+
 		enablePanning: function() {
 			var self = this,
 				dom = this.dom;
-				
+
 			if(!self.opts.enable_slideshow) { return; }
-			
+
 			dom.gv_panel.css('cursor','url(http://www.google.com/intl/en_ALL/mapfiles/openhand.cur), n-resize');
 			if(this.opts.pan_style === 'drag') {
 				dom.gv_panelWrap.delegate('.gv_panel img','mousedown.galleryview',function(e) {
@@ -810,15 +921,15 @@ if (typeof Object.create !== 'function') {
 						distX = e.pageX - self.mouse.x;
 						new_top = gv.getInt(image.css('top')) + distY;
 						new_left = gv.getInt(image.css('left')) + distX;
-							
+
 						image.css('cursor','url(http://www.google.com/intl/en_ALL/mapfiles/closedhand.cur), n-resize');
-						
+
 						if(new_top > 0) new_top = 0;
 						if(new_left > 0) new_left = 0;
-						
+
 						if(new_top < (-1 * (gv.outerHeight(image) - gv.innerHeight(dom.gv_panel)))) { new_top = -1 * (gv.outerHeight(image) - gv.innerHeight(dom.gv_panel)); }
 						if(new_left < (-1 * (gv.outerWidth(image) - gv.innerWidth(dom.gv_panel)))) { new_left = -1 * (gv.outerWidth(image) - gv.innerWidth(dom.gv_panel)); }
-						
+
 						image.css('top',new_top);
 						image.css('left',new_left);
 					} else {
@@ -826,14 +937,14 @@ if (typeof Object.create !== 'function') {
 					}
 				});
 			} else {
-				
+
 			}
 		},
-		
+
 		bindActions: function() {
 			var self = this,
 				dom = this.dom;
-			
+
 			dom.gv_showOverlay.bind('click.galleryview',function(){
 				if(self.overlayVisible) {
 					self.hideOverlay(250);
@@ -841,7 +952,7 @@ if (typeof Object.create !== 'function') {
 					self.showOverlay(250);
 				}
 			});
-			
+
 			dom.gv_navWrap.delegate('div','click.galleryview',function(){
 				var el = $(this);
 				if(el.hasClass('gv_navNext')) {
@@ -855,7 +966,7 @@ if (typeof Object.create !== 'function') {
 				}
 				return false;
 			});
-			
+
 			dom.gv_panelNavNext.bind('click.galleryview',function(){ 
 				self.showNext(); 
 				return false;
@@ -864,91 +975,91 @@ if (typeof Object.create !== 'function') {
 				self.showPrev(); 
 				return false;
 			});
-			
+
 			dom.gv_filmstripWrap.delegate('.gv_frame','click.galleryview',function(){
 				var el = $(this),
 					i = el.data('frameIndex');
-				
+
 				this.navAction = 'frame';
 				self.showItem(i);
 				return false;
 			});
-			
+
 			dom.gv_panelWrap.bind('mouseover.galleryview',function(){
 				self.showPanelNav();
 			}).bind('mouseout.galleryview',function(){
 				self.hidePanelNav();
 			});
 		},
-		
+
 		unbindActions: function() {
 			var self = this,
 				dom = this.dom;
-				
+
 			dom.gv_showOverlay.unbind('click.galleryview');
 			dom.gv_panelNavNext.unbind('click.galleryview');
 			dom.gv_panelNavPrev.unbind('click.galleryview');
 			dom.gv_navWrap.undelegate('div','click.galleryview');
 			dom.gv_filmstripWrap.undelegate('.gv_frame','click.galleryview');
 		},
-		
+
 		showPanelNav: function() {
 			var self = this,
 				dom = this.dom;
-				
+
 			dom.gv_panelNavNext.show();
 			dom.gv_panelNavPrev.show();	
 		},
-		
+
 		hidePanelNav: function() {
 			var self = this,
 				dom = this.dom;
-				
+
 			dom.gv_panelNavNext.hide();
 			dom.gv_panelNavPrev.hide();	
 		},
-		
+
 		init: function(options,el) {
 			var self = this,
 				dom = this.dom = {};
-				
+
 			this.opts = $.extend({},$.fn.galleryView.defaults,options);
 			this.el = el;
 			this.$el = $(el);
 			this.id = el.id;
 			this.iterator = this.frameIterator = this.opts.start_frame - 1;
-			this.overlayVisible = false;
+			this.overlayVisible = this.opts.show_overlays;
 			this.playing = false;
 			this.scrolling = false;
 			this.isMouseDown = false;
 			this.mouse = { x: 0, y: 0 };
 			this.filmstripOrientation = (this.opts.filmstrip_position === 'top' || this.opts.filmstrip_position === 'bottom') ? 'horizontal' : 'vertical';
-			
+
 			$(document).bind('mousemove.galleryview',function(e) {
 				self.mouse = {x: e.pageX, y: e.pageY};	   
 			});
-			
+
 			// create all necessary DOM elements
 			$.each(this.elems,function(i,elem) {
 				var elem = elem.split('.');
-				
+
 				// if there is no tag name, assume <div>
 				if(elem[0] === '') { elem[0] = 'div'; }
-				
+
 				// add jQuery element to dom object
 				dom[elem[1]] = self.createElem({'class':elem[1]},elem[0]);
 			});
-			
+
 			dom.gv_imageStore.appendTo($('body'));
-			
+
 			dom.gv_galleryWrap.delegate('img','mousedown.galleryview',function(e){ if(e.preventDefault) { e.preventDefault(); } });
-			
+
 			dom.gv_panel.addClass('gv_panel-loading');
 			dom.gv_frame.addClass('gv_frame-loading');
-			
+
 			// nest DOM elements
 			dom.gv_galleryWrap.hide().append(dom.gv_gallery);
-			
+
 			if(this.opts.show_panels) {
 				dom.gv_gallery.append(dom.gv_panelWrap);
 				if(this.opts.show_panel_nav) {
@@ -958,14 +1069,14 @@ if (typeof Object.create !== 'function') {
 					dom.gv_panelWrap.append(dom.gv_infobar);
 				}
 			}
-			
+
 			if(this.opts.show_filmstrip) {
 				dom.gv_gallery.append(
 					dom.gv_filmstripWrap.append(
 						dom.gv_filmstrip
 					)
 				);
-				
+
 				if(this.opts.show_filmstrip_nav) {
 					dom.gv_gallery.append(
 						dom.gv_navWrap.append(
@@ -976,50 +1087,71 @@ if (typeof Object.create !== 'function') {
 					);
 				}
 			}
-			
+
 			if(this.opts.enable_overlays) {
 				dom.gv_panelWrap.append(dom.gv_overlay,dom.gv_showOverlay);	
 			}
-			
+
 			if(this.opts.show_captions) {
 				dom.gv_frame.append(dom.gv_caption).appendTo(dom.gv_gallery);	
 			}
-			
+
 			//swap out source element with gallery
 			this.$el.replaceWith(dom.gv_galleryWrap);
-			
+
 			if(this.opts.pan_images) {
 				this.enablePanning();
 			}
-			
+
 			// convert source images into gvImage objects
 			this.storeImages();
-			
+
 			// block out dimensions/positions of gallery elements
 			this.buildGallery();
-			
+
 			// begin loading images into gallery
 			this.initImages();
-			
+
 			// set up transitions, buttons
 			this.bindActions();
-			
+
 			// remove temporary frame element
 			dom.gv_frame.remove();
-			
+
 			// show gallery
 			dom.gv_galleryWrap.show();
-			
+
 			if(this.opts.autoplay) {
 				this.startSlideshow(true);
 			}
-			
+
 			this.updateOverlay(this.iterator);
 			this.updateFilmstrip(this.frameIterator);
+		},
+
+		/*
+		 * Resizing code...
+		 */
+		resizeGallery: function(panel_width, panel_height, frame_width, frame_height){
+
+			// new width and height
+			if(panel_width!=undefined){ this.opts.panel_width = panel_width; }
+			if(panel_height!=undefined){ this.opts.panel_height = panel_height; }
+			if(frame_width!=undefined){ this.opts.frame_width = frame_width; }
+			if(frame_height!=undefined){ this.opts.frame_height = frame_height; }
+
+			// resize gallery: dimensions & positions
+			this.buildGallery(false);
+
+			// resize images in view
+			$("img", this.gv_galleryWrap).trigger( "resizegalleryimage" );
+
+			// resize images out of view
+			$("img", this.dom.gv_panels).trigger( "resizegalleryimage" );
 		}
-		
+
 	}; // END GalleryView
-	
+
 	/*
 		MAIN PLUGIN CODE
 	*/
@@ -1028,25 +1160,46 @@ if (typeof Object.create !== 'function') {
 			return this.each(function () {
 				var gallery = Object.create(GalleryView);
 				gallery.init(options,this);
+
+				/* -- resizecode -- keep object for when resize is called */
+				this.galleryViewForObject = gallery;
 			});
 		}
 	};
-	
+
+	/*
+	 * MAIN RESIZING CODE
+	 *
+	 * Call this method to resize the panel and/or the frames
+	 *
+	 * All arguments are optional (use undefined)
+	 */
+	$.fn.resizeGalleryView = function (panel_width, panel_height, frame_width, frame_height){
+		if (this.length) {
+			return this.each(function () {
+				if(this.galleryViewForObject){
+					this.galleryViewForObject.resizeGallery(panel_width, panel_height, frame_width, frame_height);
+				}
+			});
+		}
+	};
+
 	/*
 		Default Options
 			Object literal storing default plugin options
 	*/
 	$.fn.galleryView.defaults = {
-	
+
 		// General Options
 		transition_speed: 1000, 		//INT - duration of panel/frame transition (in milliseconds)
 		transition_interval: 5000, 		//INT - delay between panel/frame transitions (in milliseconds)
 		easing: 'swing', 				//STRING - easing method to use for animations (jQuery provides 'swing' or 'linear', more available with jQuery UI or Easing plugin)
-		
+
 		// Panel Options
 		show_panels: true, 				//BOOLEAN - flag to show or hide panel portion of gallery
 		show_panel_nav: true, 			//BOOLEAN - flag to show or hide panel navigation buttons
-		enable_overlays: false, 			//BOOLEAN - flag to show or hide panel overlays
+		enable_overlays: false, 		//BOOLEAN - flag to enable or disable panel overlays
+		show_overlays: false,			//BOOLEAN - flag to show or hide panel overlays on page load (if overlays are enabled) 
 		panel_width: 800, 				//INT - width of gallery panel (in pixels)
 		panel_height: 400, 				//INT - height of gallery panel (in pixels)
 		panel_animation: 'fade', 		//STRING - animation method for panel transitions (crossfade,fade,slide,none)
@@ -1055,7 +1208,7 @@ if (typeof Object.create !== 'function') {
 		pan_images: false,				//BOOLEAN - flag to allow user to grab/drag oversized images within gallery
 		pan_style: 'drag',				//STRING - panning method (drag = user clicks and drags image to pan, track = image automatically pans based on mouse position
 		pan_smoothness: 15,				//INT - determines smoothness of tracking pan animation (higher number = smoother)
-		
+
 		// Filmstrip Options
 		start_frame: 1, 				//INT - index of panel/frame to show first when gallery loads
 		show_filmstrip: true, 			//BOOLEAN - flag to show or hide filmstrip portion of gallery
@@ -1071,9 +1224,11 @@ if (typeof Object.create !== 'function') {
 		frame_opacity: 0.4, 			//FLOAT - transparency of non-active frames (1.0 = opaque, 0.0 = transparent)
 		frame_scale: 'crop', 			//STRING - cropping option for filmstrip images (same as above)
 		frame_gap: 5, 					//INT - spacing between frames within filmstrip (in pixels)
-		
+
 		// Info Bar Options
 		show_infobar: true,				//BOOLEAN - flag to show or hide infobar
-		infobar_opacity: 1				//FLOAT - transparency for info bar
+		infobar_opacity: 1,				//FLOAT - transparency for info bar
+
+		panel_can_upscale_image: true
 	};
 })(jQuery);
