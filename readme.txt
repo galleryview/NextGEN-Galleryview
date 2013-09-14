@@ -2,9 +2,9 @@
 Contributors: Alex Rabe, Brandon Hubbard
 Donate link: http://brandonhubbard.com/
 Tags: photos, slideshow,images,gallery,media,admin,post,photo-albums,pictures,widgets,photo,picture,image,nextgen-gallery,nextgen gallery
-Requires at least: 3.4
-Tested up to: 3.5.2
-Stable tag: 1.3.1
+Requires at least: 3.5
+Tested up to: 3.6.1
+Stable tag: 1.3.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -56,6 +56,10 @@ Jack Wanders
 
 
 == Changelog ==
+
+= V1.3.2 =
+
+* Added support for Jetpack Photon
 
 = V1.3.1 =
 
