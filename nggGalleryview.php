@@ -5,7 +5,7 @@ Plugin URI: http://bhubbard.github.com/NextGEN-Galleryview/
 Description: Add the script files and template for the jQuery Plugin Galleryview integration from Jack Anderson (http://www.spaceforaname.com/galleryview/). Use the shortcode [nggallery id=x template="galleryview"] to show the new layout. Plugin originally created by Alex Rabe.
 Author: Alex Rabe, Brandon Hubbard
 Author URI: http://brandonhubbard.com/
-Version: 1.3.2
+Version: 1.3.2.1
 */
 
 if (!class_exists('nggGalleryview')) {
@@ -41,7 +41,15 @@ if (!class_exists('nggGalleryview')) {
 		// GalleryView Styles
 		function ngg_galleryview_styles() {
 			if ( !is_admin() ) { // we do not want our styles to load in the dashboard
-				wp_enqueue_style('galleryview-css', $this->plugin_url . 'galleryview/css/galleryview.css', false, null, 'all');
+			   // Check theme for styles first
+			   if ( file_exists (get_stylesheet_directory() . "/nggallery/css/galleryview.css")) {
+					$csspath = get_stylesheet_directory() . "/nggallery/css/galleryview.css";
+				}
+				else  {
+					$csspath = $this->plugin_url . 'galleryview/css/galleryview.css';
+				}				   
+		
+				wp_enqueue_style('galleryview-css', $csspath, false, null, 'all');
 			}
 		}
 
@@ -54,15 +62,22 @@ if (!class_exists('nggGalleryview')) {
 				wp_enqueue_script('jquery');
 
 				// jQuery Easing via CDN
-				wp_register_script('jquery-easing', '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js', 'jquery', null, false);
+				wp_register_script('jquery-easing', '//cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js', 'jquery', null, true);
 				wp_enqueue_script('jquery-easing');
 
 				// jQuery Timers
-				wp_register_script('jquery-timers', $this->plugin_url . 'galleryview/js/jquery.timers.js', 'jquery', null, false);
+				wp_register_script('jquery-timers', $this->plugin_url . 'galleryview/js/jquery.timers.js', 'jquery', null, true);
 				wp_enqueue_script('jquery-timers');
 
 				// jQuery GalleryView
-				wp_register_script('jquery-galleryview', $this->plugin_url . 'galleryview/js/jquery.galleryview.js', array('jquery', 'jquery-timers', 'jquery-easing'), null, false);
+			   // Check theme for script first
+			   if ( file_exists (get_stylesheet_directory() . "/nggallery/js/jquery.galleryview.js")) {
+					$jspath = get_stylesheet_directory() . "/nggallery/js/jquery.galleryview.js";
+				}
+				else  {
+					$jspath = $this->plugin_url . 'galleryview/js/jquery.galleryview.js';
+				}				   
+				wp_register_script('jquery-galleryview', $jspath, array('jquery-timers', 'jquery-easing'), null, true);
 				wp_enqueue_script('jquery-galleryview');
 			}
 		}
