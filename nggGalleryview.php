@@ -6,6 +6,8 @@ Description: Add the script files and template for the jQuery Plugin Galleryview
 Author: Alex Rabe, Brandon Hubbard
 Author URI: http://brandonhubbard.com/
 Version: 1.3.3
+Text Domain: NextGen-Galleryview
+Domain Path: /languages
 */
 
 if (!class_exists('nggGalleryview')) {
