@@ -1,9 +1,9 @@
 /*
 
 	GalleryView Stylesheet
-	
+
 	Use the CSS rules below to modify the look of your gallery.
-	 
+
 	To create additional rules, use the markup below as a guide to GalleryView's architecture.
 */
 
@@ -14,7 +14,7 @@
 .gv_galleryWrap { position: relative; background: #222; font-size: 10pt; }
 
 /* GALLERY DIV */
-.gv_gallery { overflow: hidden; position: relative;}
+.gv_gallery { overflow: hidden; position: relative; padding: 5px;}
 
 .gv_imageStore { visibility: hidden; position: absolute; top: -10000px; left: -10000px; }
 
@@ -33,11 +33,11 @@
 .gv_panel img { position: absolute; }
 
 .gv_overlay { position: absolute; background: #222; color: white; z-index: 200; }
-.gv_showOverlay { 
-	position: absolute; 
-	width: 20px; 
-	height: 20px; 
-	background: url(themes/light/info.png) #222; 
+.gv_showOverlay {
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	background: url(themes/light/info.png) #222;
 	cursor: pointer;
 	z-index: 200;
 }
@@ -52,14 +52,14 @@
 	font-size: 10pt;
 	font-weight: bold;
 	color: white;
-	
+
 	position: absolute;
 	bottom: 0;
 	right: 0;
 	display: none;
 	vertical-align: middle;
 	z-index: 2000;
-	
+
 }
 
 
@@ -74,7 +74,7 @@
 .gv_filmstrip { margin: 0; padding: 0; position: absolute; top: 0; left: 0; }
 
 /* FILMSTRIP FRAMES (contains both images and captions) */
-.gv_frame { 
+.gv_frame {
 	cursor: pointer;
 	float: left;
 	position: relative;
@@ -111,7 +111,7 @@
 .gv_navPause,
 .gv_navNext,
 .gv_navPrev {
-	
+
 	opacity: 0.3;
 	-moz-opacity: 0.3;
 	-khtml-opacity: 0.3;
