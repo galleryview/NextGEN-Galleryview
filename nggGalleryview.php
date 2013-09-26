@@ -5,7 +5,7 @@ Plugin URI: http://bhubbard.github.com/NextGEN-Galleryview/
 Description: Add the script files and template for the jQuery Plugin Galleryview integration from Jack Anderson (http://www.spaceforaname.com/galleryview/). Use the shortcode [nggallery id=x template="galleryview"] to show the new layout. Plugin originally created by Alex Rabe.
 Author: Alex Rabe, Brandon Hubbard
 Author URI: http://brandonhubbard.com/
-Version: 1.3.2.1
+Version: 1.3.3
 */
 
 if (!class_exists('nggGalleryview')) {
@@ -24,39 +24,45 @@ if (!class_exists('nggGalleryview')) {
 			add_filter('ngg_render_template', array(&$this, 'add_template'), 10, 2);
 		}
 
-// Add our Template
+		// Add our Template
 		function add_template( $path, $template_name = false) {
 			if ( preg_match('/^gallery-galleryview(-.+)?$/', $template_name) ) {
 			   // Check theme for template first
 			   if ( file_exists (get_stylesheet_directory() . "/nggallery/$template_name.php")) {
-				   $path = get_stylesheet_directory() . "/nggallery/$template_name.php";
+				   $galleryviewtemplate = get_stylesheet_directory() . "/nggallery/$template_name.php";
 				}
 				else  {
-				   $path = WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/view/gallery-galleryview.php';
+				   $galleryviewtemplate = WP_PLUGIN_DIR . '/' . plugin_basename( dirname(__FILE__) ) . '/view/gallery-galleryview.php';
 				}
 			}
-			return $path;
+			return $galleryviewtemplate;
 		}
+
 
 		// GalleryView Styles
 		function ngg_galleryview_styles() {
-			if ( !is_admin() ) { // we do not want our styles to load in the dashboard
+
+			if ( !is_admin() ) {
+
 			   // Check theme for styles first
 			   if ( file_exists (get_stylesheet_directory() . "/nggallery/css/galleryview.css")) {
-					$csspath = get_stylesheet_directory() . "/nggallery/css/galleryview.css";
+					$galleryviewcss = get_stylesheet_directory() . "/nggallery/css/galleryview.css";
 				}
-				else  {
-					$csspath = $this->plugin_url . 'galleryview/css/galleryview.css';
-				}				   
-		
-				wp_enqueue_style('galleryview-css', $csspath, false, null, 'all');
+
+			   else {
+					$galleryviewcss = $this->plugin_url . 'galleryview/css/galleryview.css';
+			   }
+
+				wp_register_style('galleryview-css', $galleryviewcss, false, null, 'all');
+				wp_enqueue_style('galleryview-css');
 			}
 		}
+
 
 		// GalleryView Scripts
 		function ngg_galleryview_scripts() {
 
-			if ( !is_admin() ) { // we do not want our scripts to load in the dashboard
+			if ( !is_admin() ) {
 
 				// Load Jquery
 				wp_enqueue_script('jquery');
@@ -66,17 +72,17 @@ if (!class_exists('nggGalleryview')) {
 				wp_enqueue_script('jquery-easing');
 
 				// jQuery Timers
-				wp_register_script('jquery-timers', $this->plugin_url . 'galleryview/js/jquery.timers.js', 'jquery', null, true);
+				wp_register_script('jquery-timers', $this->plugin_url . 'galleryview/js/jquery.timers.min.js', 'jquery', null, true);
 				wp_enqueue_script('jquery-timers');
 
 				// jQuery GalleryView
-			   // Check theme for script first
-			   if ( file_exists (get_stylesheet_directory() . "/nggallery/js/jquery.galleryview.js")) {
+			    // Check theme for script first
+			    if ( file_exists (get_stylesheet_directory() . "/nggallery/js/jquery.galleryview.js")) {
 					$jspath = get_stylesheet_directory() . "/nggallery/js/jquery.galleryview.js";
 				}
 				else  {
-					$jspath = $this->plugin_url . 'galleryview/js/jquery.galleryview.js';
-				}				   
+					$jspath = $this->plugin_url . 'galleryview/js/jquery.galleryview.min.js';
+				}
 				wp_register_script('jquery-galleryview', $jspath, array('jquery-timers', 'jquery-easing'), null, true);
 				wp_enqueue_script('jquery-galleryview');
 			}
@@ -92,7 +98,7 @@ if (!class_exists('nggGalleryview')) {
 // PressTrends Plugin API
 // ######################
 
-	function presstrends_NextGEN_Galleryview_plugin() {
+	function ngg_galleryview_presstrends_plugin() {
 
 		// PressTrends Account API Key
 		$api_key = 'l325qf6uap6dnjrrutams299ajr5zsts8wgr';
@@ -151,4 +157,18 @@ if (!class_exists('nggGalleryview')) {
 	}
 
 // PressTrends WordPress Action
-add_action('admin_init', 'presstrends_NextGEN_Galleryview_plugin');
+add_action('admin_init', 'ngg_galleryview_presstrends_plugin');
+
+
+// Setup PressTrends Events
+function ngg_galleryview_presstrends_track_event($event_name) {
+ 	// PressTrends Account API Key & Theme/Plugin Unique Auth Code
+	$api_key 		= 'l325qf6uap6dnjrrutams299ajr5zsts8wgr';
+	$auth 			= 'x4c8n8lypba98pee90wdct12lnnyja238';
+	$api_base 		= 'http://api.presstrends.io/index.php/api/events/track/auth/';
+	$api_string     = $api_base . $auth . '/api/' . $api_key . '/';
+	$site_url 		= base64_encode(site_url());
+    $event_string	= $api_string . 'name/' . urlencode($event_name) . '/url/' . $site_url . '/';
+	wp_remote_get( $event_string );
+	}
+add_action( 'presstrends_event', 'ngg_galleryview_presstrends_track_event', 1, 1 );

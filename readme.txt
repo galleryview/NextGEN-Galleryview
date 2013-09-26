@@ -4,7 +4,7 @@ Donate link: http://brandonhubbard.com/
 Tags: photos, slideshow,images,gallery,media,admin,post,photo-albums,pictures,widgets,photo,picture,image,nextgen-gallery,nextgen gallery
 Requires at least: 3.5
 Tested up to: 3.6.1
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -56,6 +56,13 @@ Jack Wanders
 
 
 == Changelog ==
+
+= V1.3.3 =
+
+* Added Support to override CSS & JS within Theme (thanks @jonrandahl - PrecisionCoding)
+* Updated PressTrends Functions, added support for Events
+* Small CSS Updated, Minified CSS for Performance
+* Created jquery.galleryview.min.js & jquery.timers.min.js for Performance
 
 = V1.3.2 =
 
