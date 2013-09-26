@@ -8,7 +8,7 @@
 
 /* DEFAULTS */
 .gv_galleryWrap { position: relative; background: #222; font-size: 10pt; } /* GALLERY LIST */
-.gv_gallery { overflow: hidden; position: relative; padding: 5px;} /* GALLERY DIV */
+.gv_gallery { overflow: hidden; position: relative;} /* GALLERY DIV */
 .gv_imageStore { visibility: hidden; position: absolute; top: -10000px; left: -10000px; }
 
 /* PANEL STYLES */
