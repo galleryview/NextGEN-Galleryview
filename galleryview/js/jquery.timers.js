@@ -1,5 +1,6 @@
-﻿/**
+﻿/*!
  * jQuery.timers - Timer abstractions for jQuery
+ * http://jquery.offput.ca/every/
  * Written by Blair Mitchelmore (blair DOT mitchelmore AT gmail DOT com)
  * Licensed under the WTFPL (http://sam.zoy.org/wtfpl/).
  * Date: 2009/10/16
@@ -57,49 +58,49 @@ jQuery.extend({
 		},
 		add: function(element, interval, label, fn, times) {
 			var counter = 0;
-
+			
 			if (jQuery.isFunction(label)) {
-				if (!times)
+				if (!times) 
 					times = fn;
 				fn = label;
 				label = interval;
 			}
-
+			
 			interval = jQuery.timer.timeParse(interval);
 
 			if (typeof interval != 'number' || isNaN(interval) || interval < 0)
 				return;
 
-			if (typeof times != 'number' || isNaN(times) || times < 0)
+			if (typeof times != 'number' || isNaN(times) || times < 0) 
 				times = 0;
-
+			
 			times = times || 0;
-
+			
 			var timers = jQuery.data(element, this.dataKey) || jQuery.data(element, this.dataKey, {});
-
+			
 			if (!timers[label])
 				timers[label] = {};
-
+			
 			fn.timerID = fn.timerID || this.guid++;
-
+			
 			var handler = function() {
 				if ((++counter > times && times !== 0) || fn.call(element, counter) === false)
 					jQuery.timer.remove(element, label, fn);
 			};
-
+			
 			handler.timerID = fn.timerID;
-
+			
 			if (!timers[label][fn.timerID])
 				timers[label][fn.timerID] = window.setInterval(handler,interval);
-
+			
 			this.global.push( element );
-
+			
 		},
 		remove: function(element, label, fn) {
 			var timers = jQuery.data(element, this.dataKey), ret;
-
+			
 			if ( timers ) {
-
+				
 				if (!label) {
 					for ( label in timers )
 						this.remove(element, label, fn);
@@ -115,16 +116,16 @@ jQuery.extend({
 							delete timers[label][fn];
 						}
 					}
-
+					
 					for ( ret in timers[label] ) break;
 					if ( !ret ) {
 						ret = null;
 						delete timers[label];
 					}
 				}
-
+				
 				for ( ret in timers ) break;
-				if ( !ret )
+				if ( !ret ) 
 					jQuery.removeData(element, this.dataKey);
 			}
 		}

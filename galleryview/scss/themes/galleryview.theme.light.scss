@@ -1,0 +1,46 @@
+/*-----------------------------------------------------------------------------------
+
+	GalleryView Light Theme
+	Version: 3.1.0
+	
+-----------------------------------------------------------------------------------*/
+/* The Sprite */
+.gv_showOverlay, .gv_navPlay, .gv_navPause, .gv_navNext, .gv_navPrev, .gv_panelNavNext, .gv_panelNavPrev {
+	background: url(../images/themes/light/galleryview-theme-light-sprite.png) no-repeat;
+}
+.gv_showOverlay { 
+	background-color: #222;
+	background-position: -14px -17px ;
+	width: 20px;
+	height: 20px;
+}
+.gv_navPlay {
+	background-position: -108px -56px ;
+	width: 30px;
+	height: 30px;
+}
+.gv_navPause {
+	background-position: -165px -58px ;
+	width: 30px;
+	height: 30px;
+}
+.gv_navNext {
+	background-position: -65px -17px ;
+	width: 20px;
+	height: 20px;
+}
+.gv_navPrev {
+	background-position: -112px -17px ;
+	width: 20px;
+	height: 20px;
+}
+.gv_panelNavNext {
+	background-position: -210px -18px ;
+	width: 20px;
+	height: 20px;
+}
+.gv_panelNavPrev {
+	background-position: -112px -17px ;
+	width: 20px;
+	height: 20px;
+}
